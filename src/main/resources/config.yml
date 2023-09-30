@@ -1,0 +1,29 @@
+recipes:
+  emerald_pickaxe:
+    # The shape is a grid of characters, where each character represents a material.
+    shape:
+      - "AAA"
+      - " B "
+      - " B "
+
+    # Explanation: A = EMERALD, B = STICK
+    ingredients:
+      A: "EMERALD"
+      B: "STICK"
+
+    # The result is the item that is crafted.
+    result:
+      material: "DIAMOND_PICKAXE"
+      name: "Emerald Pickaxe"
+
+  emerald_sword:
+    shape:
+      - "A"
+      - "A"
+      - "B"
+    ingredients:
+      A: "EMERALD"
+      B: "STICK"
+    result:
+      material: "DIAMOND_SWORD"
+      name: "Emerald Sword"
