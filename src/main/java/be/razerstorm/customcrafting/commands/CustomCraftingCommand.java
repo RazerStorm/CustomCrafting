@@ -1,6 +1,6 @@
 package be.razerstorm.customcrafting.commands;
 
-import be.razerstorm.customcrafting.inventories.CreateRecipeMenu;
+import be.razerstorm.customcrafting.inventories.ManageRecipeMenu;
 import be.razerstorm.customcrafting.managers.RecipeManager;
 import be.razerstorm.customcrafting.utils.ColorUtils;
 import co.aikar.commands.BaseCommand;
@@ -31,16 +31,20 @@ public class CustomCraftingCommand extends BaseCommand {
             player.sendMessage(ColorUtils.color("&cRecipe already exists!"));
             return;
         }
-        new CreateRecipeMenu(player, recipeName).openMenu();
+        new ManageRecipeMenu(player, recipeName, false).openMenu();
     }
 
-    // Will be adding the subcommand for editing later
-    /*@Subcommand("edit")
+    @Subcommand("edit")
     @Syntax("edit <name>")
+    @CommandCompletion("@recipes")
     @CommandPermission("customcrafting.command.edit")
-    public void onEdit(Player player) {
-        // edit in config & then remove from server and add again
-    }*/
+    public void onEdit(Player player, String recipeName) {
+        if (!RecipeManager.getInstance().recipeExists(recipeName)) {
+            player.sendMessage(ColorUtils.color("&cRecipe not found!"));
+            return;
+        }
+        new ManageRecipeMenu(player, recipeName, true).openMenu();
+    }
 
     @Subcommand("delete")
     @Syntax("delete <name>")

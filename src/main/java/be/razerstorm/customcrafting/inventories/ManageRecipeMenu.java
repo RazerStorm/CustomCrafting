@@ -6,6 +6,7 @@ import be.razerstorm.customcrafting.objetcs.RecipeInfo;
 import be.razerstorm.customcrafting.utils.ColorUtils;
 import be.razerstorm.customcrafting.utils.GUIHolder;
 import be.razerstorm.customcrafting.utils.ItemBuilder;
+import co.aikar.commands.annotation.Optional;
 import com.cryptomorin.xseries.XItemStack;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
@@ -21,10 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CreateRecipeMenu extends GUIHolder {
+public class ManageRecipeMenu extends GUIHolder {
 
     private final Player player;
     private final String recipeName;
+    private final boolean editing;
     private final List<Integer> excludedSlots = Arrays.asList(10, 11, 12, 19, 20, 21, 23, 28, 29, 30);
     private final HashMap<Integer, Integer[]> rows = new HashMap<Integer, Integer[]>() {{
         put(1, new Integer[]{10, 11, 12});
@@ -43,13 +45,18 @@ public class CreateRecipeMenu extends GUIHolder {
 
     private final HashMap<Material, Character> ingredientsList = new HashMap<>();
 
-    public CreateRecipeMenu(Player player, String recipeName) {
+    public ManageRecipeMenu(Player player, String recipeName, boolean editing) {
         this.player = player;
         this.recipeName = recipeName;
+        this.editing = editing;
     }
 
     public void openMenu() {
-        this.inventory = Bukkit.createInventory(this, 5 * 9, ColorUtils.color("&eCreating recipe: &6" + recipeName));
+        if(editing) {
+            this.inventory = Bukkit.createInventory(this, 5 * 9, ColorUtils.color("&eEditing recipe: &6" + recipeName));
+        }else {
+            this.inventory = Bukkit.createInventory(this, 5 * 9, ColorUtils.color("&eCreating recipe: &6" + recipeName));
+        }
 
         ItemStack item = new ItemBuilder(XMaterial.BLACK_STAINED_GLASS_PANE.parseMaterial())
                 .setColoredName("&8")
@@ -61,8 +68,29 @@ public class CreateRecipeMenu extends GUIHolder {
             return true;
         };
 
+        if(editing) {
+            RecipeInfo recipeInfo = RecipeManager.getInstance().getRecipeInfo(recipeName);
+            ItemStack output = recipeInfo.getOutput();
+            inventory.setItem(23, output);
+            String[] shape = recipeInfo.getShape();
+            HashMap<Character, XMaterial> ingredients = recipeInfo.getIngredients();
+
+            for(int i = 0; i < shape.length; i++) {
+                String row = shape[i];
+                for(int j = 0; j < row.length(); j++) {
+                    char c = row.charAt(j);
+                    XMaterial material = ingredients.get(c);
+                    if(material != null) {
+                        inventory.setItem(rows.get(i + 1)[j], material.parseItem());
+                    }
+                }
+            }
+        }
+
         XItemStack.addItems(inventory, false, fill, item);
         inventory.setItem(25, invalid);
+
+
 
         open(player);
     }
@@ -107,7 +135,14 @@ public class CreateRecipeMenu extends GUIHolder {
     public void submit() {
         ItemStack output = inventory.getItem(23);
         RecipeInfo recipeInfo = getRecipeInfo();
-        RecipeManager.getInstance().addRecipe(recipeName, output, recipeInfo.getIngredients(), recipeInfo.getIdentifier());
+        if(editing) {
+            RecipeManager.getInstance().editRecipe(recipeName, output, recipeInfo.getIngredients(), recipeInfo.getShape());
+            player.sendMessage(ColorUtils.color("&aSuccessfully edited recipe &2" + recipeName + "&a!"));
+            player.closeInventory();
+            return;
+        }
+
+        RecipeManager.getInstance().addRecipe(recipeName, output, recipeInfo.getIngredients(), recipeInfo.getShape());
         player.sendMessage(ColorUtils.color("&aSuccessfully created recipe &2" + recipeName + "&a!"));
         player.closeInventory();
     }
