@@ -33,7 +33,5 @@ public final class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AdminJoinListener(), this);
 
         RecipeManager.getInstance().loadRecipes();
-
-
     }
 }
