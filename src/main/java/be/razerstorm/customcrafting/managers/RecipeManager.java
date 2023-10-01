@@ -3,10 +3,10 @@ package be.razerstorm.customcrafting.managers;
 import be.razerstorm.customcrafting.CustomCrafting;
 import be.razerstorm.customcrafting.objetcs.RecipeInfo;
 import com.cryptomorin.xseries.XItemStack;
-import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.ArrayList;
@@ -36,11 +36,10 @@ public class RecipeManager {
             }
             ItemStack output = XItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection("recipes." + recipeName + ".result")));
             String[] shape = config.getStringList("recipes." + recipeName + ".shape").toArray(new String[0]);
-            HashMap<Character, XMaterial> ingredients = new HashMap();
+            HashMap<Character, ItemStack> ingredients = new HashMap();
 
             config.getConfigurationSection("recipes." + recipeName + ".ingredients").getKeys(false).forEach(ingredientKey -> {
-                XMaterial material = XMaterial.valueOf(config.getString("recipes." + recipeName + ".ingredients." + ingredientKey));
-                ingredients.put(ingredientKey.charAt(0), material);
+                ingredients.put(ingredientKey.charAt(0), XItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection("recipes." + recipeName + ".ingredients." + ingredientKey))));
             });
 
             pushToServerRecipes(output, ingredients, new NamespacedKey(customCrafting, recipeName), shape);
@@ -50,7 +49,7 @@ public class RecipeManager {
         customCrafting.getLogger().info("Loaded " + recipesLoaded.get() + " recipes in " + (System.currentTimeMillis() - initializeTime) + "ms!");
     }
 
-    public void addRecipe(String recipeName, ItemStack output, HashMap<Character, XMaterial> ingredients, String... shape) {
+    public void addRecipe(String recipeName, ItemStack output, HashMap<Character, ItemStack> ingredients, String... shape) {
         CustomCrafting customCrafting = CustomCrafting.getInstance();
         FileConfiguration config = customCrafting.getConfig();
 
@@ -58,7 +57,7 @@ public class RecipeManager {
         config.set("recipes." + recipeName + ".shape", shape);
 
         ingredients.forEach((identifier, ingredient) -> {
-            config.set("recipes." + recipeName + ".ingredients." + identifier, ingredient.name());
+            config.set("recipes." + recipeName + ".ingredients." + identifier, XItemStack.serialize(ingredient));
         });
 
         customCrafting.saveConfig();
@@ -78,7 +77,7 @@ public class RecipeManager {
         CustomCrafting.getInstance().getServer().removeRecipe(new NamespacedKey(customCrafting, recipeName));
     }
 
-    public void editRecipe(String recipeName, ItemStack output, HashMap<Character, XMaterial> ingredients, String... shape) {
+    public void editRecipe(String recipeName, ItemStack output, HashMap<Character, ItemStack> ingredients, String... shape) {
         CustomCrafting customCrafting = CustomCrafting.getInstance();
         FileConfiguration config = customCrafting.getConfig();
 
@@ -88,7 +87,7 @@ public class RecipeManager {
         config.set("recipes." + recipeName + ".shape", shape);
 
         ingredients.forEach((identifier, ingredient) -> {
-            config.set("recipes." + recipeName + ".ingredients." + identifier, ingredient.name());
+            config.set("recipes." + recipeName + ".ingredients." + identifier, XItemStack.serialize(ingredient));
         });
 
         customCrafting.saveConfig();
@@ -100,13 +99,13 @@ public class RecipeManager {
         pushToServerRecipes(output, ingredients, recipeKey, shape);
     }
 
-    public void pushToServerRecipes(ItemStack output, HashMap<Character, XMaterial> ingredients, NamespacedKey recipeKey, String... shape) {
+    public void pushToServerRecipes(ItemStack output, HashMap<Character, ItemStack> ingredients, NamespacedKey recipeKey, String... shape) {
         CustomCrafting customCrafting = CustomCrafting.getInstance();
         ShapedRecipe recipe = new ShapedRecipe(recipeKey, output);
         recipe.shape(shape);
 
         ingredients.forEach((identifier, ingredient) -> {
-            recipe.setIngredient(identifier, ingredient.parseMaterial());
+            recipe.setIngredient(identifier, new RecipeChoice.ExactChoice(ingredient));
         });
 
         customCrafting.getServer().addRecipe(recipe);
@@ -125,11 +124,10 @@ public class RecipeManager {
 
         ItemStack output = XItemStack.deserialize(config.getConfigurationSection("recipes." + recipeName + ".result"));
         String[] shape = config.getStringList("recipes." + recipeName + ".shape").toArray(new String[0]);
-        HashMap<Character, XMaterial> ingredients = new HashMap();
+        HashMap<Character, ItemStack> ingredients = new HashMap();
 
         config.getConfigurationSection("recipes." + recipeName + ".ingredients").getKeys(false).forEach(ingredientKey -> {
-            XMaterial material = XMaterial.valueOf(config.getString("recipes." + recipeName + ".ingredients." + ingredientKey));
-            ingredients.put(ingredientKey.charAt(0), material);
+            ingredients.put(ingredientKey.charAt(0), XItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection("recipes." + recipeName + ".ingredients." + ingredientKey))));
         });
 
         return new RecipeInfo(recipeName, output, ingredients, shape);

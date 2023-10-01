@@ -1,5 +1,5 @@
 recipes:
-  emerald_pickaxe:
+  example_pickaxe:
     # The shape is a grid of characters, where each character represents a material.
     shape:
       - "AAA"
@@ -8,22 +8,26 @@ recipes:
 
     # Explanation: A = EMERALD, B = STICK
     ingredients:
-      A: "EMERALD"
-      B: "STICK"
+      A:
+        material: "EMERALD"
+      B:
+        material: "STICK"
 
     # The result is the item that is crafted.
     result:
       material: "DIAMOND_PICKAXE"
       name: "Emerald Pickaxe"
 
-  emerald_sword:
+  example_sword:
     shape:
       - "A"
       - "A"
       - "B"
     ingredients:
-      A: "EMERALD"
-      B: "STICK"
+      A:
+        material: "EMERALD"
+      B:
+        material: "STICK"
     result:
       material: "DIAMOND_SWORD"
       name: "Emerald Sword"

@@ -2,3 +2,4 @@ name: CustomCrafting
 version: '${version}'
 main: be.razerstorm.customcrafting.CustomCrafting
 api-version: "1.13"
+authors: [ RazerStorm ]

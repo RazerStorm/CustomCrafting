@@ -6,7 +6,6 @@ import be.razerstorm.customcrafting.objetcs.RecipeInfo;
 import be.razerstorm.customcrafting.utils.ColorUtils;
 import be.razerstorm.customcrafting.utils.GUIHolder;
 import be.razerstorm.customcrafting.utils.ItemBuilder;
-import co.aikar.commands.annotation.Optional;
 import com.cryptomorin.xseries.XItemStack;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
@@ -73,15 +72,15 @@ public class ManageRecipeMenu extends GUIHolder {
             ItemStack output = recipeInfo.getOutput();
             inventory.setItem(23, output);
             String[] shape = recipeInfo.getShape();
-            HashMap<Character, XMaterial> ingredients = recipeInfo.getIngredients();
+            HashMap<Character, ItemStack> ingredients = recipeInfo.getIngredients();
 
             for(int i = 0; i < shape.length; i++) {
                 String row = shape[i];
                 for(int j = 0; j < row.length(); j++) {
                     char c = row.charAt(j);
-                    XMaterial material = ingredients.get(c);
-                    if(material != null) {
-                        inventory.setItem(rows.get(i + 1)[j], material.parseItem());
+                    ItemStack ingredient = ingredients.get(c);
+                    if(ingredient != null) {
+                        inventory.setItem(rows.get(i + 1)[j], ingredient);
                     }
                 }
             }
@@ -149,7 +148,7 @@ public class ManageRecipeMenu extends GUIHolder {
 
     public RecipeInfo getRecipeInfo() {
         String[] shapeArray = new String[3];
-        HashMap<Character, XMaterial> ingredients = new HashMap<>();
+        HashMap<Character, ItemStack> ingredients = new HashMap<>();
         List<String> shape = new ArrayList<>();
 
         for (int row : rows.keySet()) {
@@ -164,7 +163,7 @@ public class ManageRecipeMenu extends GUIHolder {
                 char ingredientLetter = getOrCreateIngredientLetter(item.getType());
 
                 rowString.append(ingredientLetter);
-                ingredients.put(ingredientLetter, XMaterial.matchXMaterial(item.getType()));
+                ingredients.put(ingredientLetter, item);
             }
 
             shape.add(rowString.toString());
