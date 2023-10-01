@@ -105,6 +105,10 @@ public class RecipeManager {
         recipe.shape(shape);
 
         ingredients.forEach((identifier, ingredient) -> {
+            // use Components optimize function for the itemstacks to prevent issues with custom items
+
+
+
             recipe.setIngredient(identifier, new RecipeChoice.ExactChoice(ingredient));
         });
 

@@ -1,3 +1,5 @@
+update-checker: true
+
 recipes:
   example_pickaxe:
     # The shape is a grid of characters, where each character represents a material.
