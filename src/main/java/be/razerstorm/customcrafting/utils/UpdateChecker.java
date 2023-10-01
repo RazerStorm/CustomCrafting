@@ -48,14 +48,17 @@ public class UpdateChecker {
             reader.close();
 
             JSONObject jsonObject = new JSONObject(response.toString());
-            String version = (String) jsonObject.get("name");
+            String latestVersion = (String) jsonObject.get("name");
 
-            if (version.equals(CustomCrafting.getInstance().getDescription().getVersion())) {
+            String currentVersion = CustomCrafting.getInstance().getDescription().getVersion();
+
+            if (latestVersion.equals(currentVersion)) {
                 UpdateAvailable = false;
                 logger.info("UpdateChecker: No update available");
             } else {
                 UpdateAvailable = true;
-                logger.warning("UpdateChecker: There is a new update available! Please download it at https://www.spigotmc.org/resources/customcrafting-create-your-own-recipes-1-12-1-20-2.112879/");
+                logger.warning("UpdateChecker: There is a new update available! (" + currentVersion + " -> " + latestVersion + ")");
+                logger.warning("Please download it at https://www.spigotmc.org/resources/customcrafting-create-your-own-recipes-1-12-1-20-2.112879/");
             }
 
 
