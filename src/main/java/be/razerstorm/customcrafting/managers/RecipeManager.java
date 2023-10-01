@@ -4,7 +4,6 @@ import be.razerstorm.customcrafting.CustomCrafting;
 import be.razerstorm.customcrafting.objetcs.RecipeInfo;
 import com.cryptomorin.xseries.XItemStack;
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +11,8 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RecipeManager {
 
@@ -21,8 +22,11 @@ public class RecipeManager {
         CustomCrafting customCrafting = CustomCrafting.getInstance();
         FileConfiguration config = customCrafting.getConfig();
 
-        config.getConfigurationSection("recipes").getKeys(false).forEach(recipeName -> {
-            Bukkit.getLogger().info("Loading recipe " + recipeName);
+        long initializeTime = System.currentTimeMillis();
+        AtomicInteger recipesLoaded = new AtomicInteger();
+
+        Objects.requireNonNull(config.getConfigurationSection("recipes")).getKeys(false).forEach(recipeName -> {
+            customCrafting.getLogger().info("Loading recipe " + recipeName);
             if (config.get("recipes." + recipeName) == null
                     || config.get("recipes." + recipeName + ".result") == null
                     || config.get("recipes." + recipeName + ".shape") == null
@@ -30,7 +34,7 @@ public class RecipeManager {
                 customCrafting.getLogger().warning("Recipe " + recipeName + " is invalid!");
                 return;
             }
-            ItemStack output = XItemStack.deserialize(config.getConfigurationSection("recipes." + recipeName + ".result"));
+            ItemStack output = XItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection("recipes." + recipeName + ".result")));
             String[] shape = config.getStringList("recipes." + recipeName + ".shape").toArray(new String[0]);
             HashMap<Character, XMaterial> ingredients = new HashMap();
 
@@ -40,7 +44,10 @@ public class RecipeManager {
             });
 
             pushToServerRecipes(output, ingredients, new NamespacedKey(customCrafting, recipeName), shape);
+            recipesLoaded.getAndIncrement();
         });
+
+        customCrafting.getLogger().info("Loaded " + recipesLoaded.get() + " recipes in " + (System.currentTimeMillis() - initializeTime) + "ms!");
     }
 
     public void addRecipe(String recipeName, ItemStack output, HashMap<Character, XMaterial> ingredients, String... shape) {
