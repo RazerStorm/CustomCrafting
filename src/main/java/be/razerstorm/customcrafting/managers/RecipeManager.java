@@ -62,6 +62,7 @@ public class RecipeManager {
         });
 
         customCrafting.saveConfig();
+        CustomCrafting.getInstance().reloadConfig();
 
         pushToServerRecipes(output, ingredients, new NamespacedKey(customCrafting, recipeName), shape);
     }
@@ -72,6 +73,7 @@ public class RecipeManager {
 
         config.set("recipes." + recipeName, null);
         customCrafting.saveConfig();
+        CustomCrafting.getInstance().reloadConfig();
 
         CustomCrafting.getInstance().getServer().removeRecipe(new NamespacedKey(customCrafting, recipeName));
     }
