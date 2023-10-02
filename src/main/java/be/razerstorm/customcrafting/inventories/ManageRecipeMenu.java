@@ -2,7 +2,7 @@ package be.razerstorm.customcrafting.inventories;
 
 import be.razerstorm.customcrafting.CustomCrafting;
 import be.razerstorm.customcrafting.managers.RecipeManager;
-import be.razerstorm.customcrafting.objetcs.RecipeInfo;
+import be.razerstorm.customcrafting.objects.RecipeInfo;
 import be.razerstorm.customcrafting.utils.ColorUtils;
 import be.razerstorm.customcrafting.utils.GUIHolder;
 import be.razerstorm.customcrafting.utils.ItemBuilder;

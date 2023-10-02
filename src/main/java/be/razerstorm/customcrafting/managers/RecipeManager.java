@@ -1,7 +1,7 @@
 package be.razerstorm.customcrafting.managers;
 
 import be.razerstorm.customcrafting.CustomCrafting;
-import be.razerstorm.customcrafting.objetcs.RecipeInfo;
+import be.razerstorm.customcrafting.objects.RecipeInfo;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;

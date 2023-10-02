@@ -1,6 +1,5 @@
-package be.razerstorm.customcrafting.objetcs;
+package be.razerstorm.customcrafting.objects;
 
-import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
