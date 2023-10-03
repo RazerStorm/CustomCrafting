@@ -30,20 +30,6 @@ recipes:
           DIG_SPEED: 5
         repair-cost: 1
 
-  example_reforge_chestplate:
-    type: FURNACE
-    result:
-      ==: org.bukkit.inventory.ItemStack
-      v: 3465
-      type: IRON_INGOT
-      amount: 4
-    ingredient:
-      ==: org.bukkit.inventory.ItemStack
-      v: 3465
-      type: IRON_CHESTPLATE
-    experience: 0
-    cookingTime: 100
-
     example_reforge_helmet:
       type: FURNACE
       result:
@@ -55,6 +41,20 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         v: 3465
         type: IRON_HELMET
+      experience: 0
+      cookingTime: 100
+
+    example_reforge_chestplate:
+      type: FURNACE
+      result:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_INGOT
+        amount: 4
+      ingredient:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_CHESTPLATE
       experience: 0
       cookingTime: 100
 
