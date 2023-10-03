@@ -2,13 +2,12 @@ update-checker: true
 
 recipes:
   example_pickaxe:
-    # The shape is a grid of characters, where each character represents a material.
+    type: "CRAFTING"
     shape:
       - "AAA"
       - " B "
       - " B "
 
-    # Explanation: A = EMERALD, B = STICK
     ingredients:
       A:
         ==: org.bukkit.inventory.ItemStack
@@ -19,7 +18,6 @@ recipes:
         v: 3465
         type: STICK
 
-    # The result is the item that is crafted.
     result:
       ==: org.bukkit.inventory.ItemStack
       v: 3465
@@ -31,3 +29,59 @@ recipes:
         enchants:
           DIG_SPEED: 5
         repair-cost: 1
+
+  example_reforge_chestplate:
+    type: FURNACE
+    result:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3465
+      type: IRON_INGOT
+      amount: 4
+    ingredient:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3465
+      type: IRON_CHESTPLATE
+    experience: 0
+    cookingTime: 100
+
+    example_reforge_helmet:
+      type: FURNACE
+      result:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_INGOT
+        amount: 2
+      ingredient:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_HELMET
+      experience: 0
+      cookingTime: 100
+
+    example_reforge_leggings:
+      type: FURNACE
+      result:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_INGOT
+        amount: 3
+      ingredient:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_LEGGINGS
+      experience: 0
+      cookingTime: 100
+
+    example_reforge_boots:
+      type: FURNACE
+      result:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_INGOT
+        amount: 2
+      ingredient:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3465
+        type: IRON_BOOTS
+      experience: 0
+      cookingTime: 100

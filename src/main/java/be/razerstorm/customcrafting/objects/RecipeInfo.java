@@ -8,6 +8,7 @@ import java.util.HashMap;
 public class RecipeInfo {
     private @Getter String[] shape;
     private @Getter HashMap<Character, ItemStack> ingredients;
+    private @Getter ItemStack ingredient;
     private @Getter String recipeName;
     private @Getter ItemStack output;
 

@@ -3,6 +3,7 @@ package be.razerstorm.customcrafting.utils;
 import be.razerstorm.customcrafting.CustomCrafting;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -22,50 +23,52 @@ public class UpdateChecker {
     private @Getter boolean UpdateAvailable;
 
     public void checkForUpdate() {
-        try {
-            URL apiUrl = new URL("https://api.spiget.org/v2/resources/112879/versions/latest");
 
-            HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
-            connection.setRequestMethod("GET");
+        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.getInstance(), () -> {
+            try {
+                URL apiUrl = new URL("https://api.spiget.org/v2/resources/112879/versions/latest");
 
-            int responseCode = connection.getResponseCode();
+                HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
+                connection.setRequestMethod("GET");
 
-            Logger logger = CustomCrafting.getInstance().getLogger();
+                int responseCode = connection.getResponseCode();
 
-            if (responseCode == 200) {
-                logger.info("UpdateChecker: HTTP_OK");
-            } else {
-                logger.warning("UpdateChecker: HTTP_OTHER");
+                Logger logger = CustomCrafting.getInstance().getLogger();
+
+                if (responseCode == 200) {
+                    logger.info("UpdateChecker: HTTP_OK");
+                } else {
+                    logger.warning("UpdateChecker: HTTP_OTHER");
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = reader.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                reader.close();
+
+                JSONObject jsonObject = new JSONObject(response.toString());
+                String latestVersion = (String) jsonObject.get("name");
+
+                String currentVersion = CustomCrafting.getInstance().getDescription().getVersion();
+
+                if (latestVersion.equals(currentVersion)) {
+                    UpdateAvailable = false;
+                    logger.info("UpdateChecker: No update available");
+                } else {
+                    UpdateAvailable = true;
+                    logger.warning("UpdateChecker: There is a new update available! (" + currentVersion + " -> " + latestVersion + ")");
+                    logger.warning("Please download it at https://www.spigotmc.org/resources/customcrafting-create-your-own-recipes-1-12-1-20-2.112879/");
+                }
+
+                connection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = reader.readLine()) != null) {
-                response.append(inputLine);
-            }
-            reader.close();
-
-            JSONObject jsonObject = new JSONObject(response.toString());
-            String latestVersion = (String) jsonObject.get("name");
-
-            String currentVersion = CustomCrafting.getInstance().getDescription().getVersion();
-
-            if (latestVersion.equals(currentVersion)) {
-                UpdateAvailable = false;
-                logger.info("UpdateChecker: No update available");
-            } else {
-                UpdateAvailable = true;
-                logger.warning("UpdateChecker: There is a new update available! (" + currentVersion + " -> " + latestVersion + ")");
-                logger.warning("Please download it at https://www.spigotmc.org/resources/customcrafting-create-your-own-recipes-1-12-1-20-2.112879/");
-            }
-
-
-            connection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public static UpdateChecker getInstance() {

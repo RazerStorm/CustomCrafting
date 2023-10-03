@@ -113,7 +113,7 @@ public class ItemBuilder {
      * @param name new name
      */
     public ItemBuilder setColoredName(String name) {
-        return setName(ColorUtils.color(name));
+        return setName(Utils.color(name));
     }
 
     /**
